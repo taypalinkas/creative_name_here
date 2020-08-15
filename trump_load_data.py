@@ -1,17 +1,11 @@
-import plotly.express as px
-import seaborn as sns
+
 from wordcloud import WordCloud, STOPWORDS
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import re
 import json
 import string
-import matplotlib.pyplot as plt
 import pandas as pd
-from textblob.sentiments import NaiveBayesAnalyzer
-from textblob import TextBlob
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-analyser = SentimentIntensityAnalyzer()
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
