@@ -1,0 +1,85 @@
+* {
+  box-sizing: border-box;
+  font-family: Ubuntu, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+img{
+  width: 75%;
+  height:75%;
+}
+.navbar-brand{
+  font-size: 36px;
+  padding: 30px 30px 30px 50px;
+}
+.wrapper {
+  position: relative;
+  min-height: 100%;
+  padding-bottom: 130px;
+  overflow: auto;
+}
+.navbar {
+  padding: 5px;
+  margin: 0;
+}
+
+#table-area th {
+  text-align: center;
+}
+#table-area th:first-child,
+#table-area th:nth-child(2),
+#table-area th:nth-child(6) {
+  min-width: 70px;
+}
+.loader {
+  margin-top: 50px;
+}
+.margin-top-50 {
+  margin-top: 50px;
+}
+
+/*screen sizes*/
+@media (max-width: 800px) {
+  #table-area td {
+    font-size: 1em;
+  }
+}
+@media (max-width: 500px) {
+  #table-area thead {
+    display: none;
+  }
+  #table-area tr td:first-child {
+    font-size: 1.8em;
+    font-weight: bold;
+    background: #1b3146;
+  }
+  #table-area tr td:last-child {
+    margin-bottom: 20px;
+  }
+  #table-area tr td:last-child::after {
+    display: block;
+    width: 100%;
+    height: 1px;
+    margin-top: 20px;
+    content: " ";
+    background: aliceblue;
+  }
+  #table-area td {
+    font-size: 1.25em;
+  }
+  #table-area tbody td {
+    display: block;
+    text-align: center;
+  }
+  #table-area tbody td::before {
+    display: block;
+    font-size: 1.4em;
+    font-weight: bold;
+    text-align: center;
+    content: attr(data-th);
+  }
