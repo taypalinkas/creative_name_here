@@ -51,6 +51,9 @@ def clean_text():
 def sentiment_analyzer(user_text, search_term):
     i = 0
     vader_sentiment = []
+    vader_pos = []
+    vader_neg = []
+    vader_neutral = []
     vader_compound = []
     time_stamp = []
     while i < len(user_text):
@@ -63,11 +66,18 @@ def sentiment_analyzer(user_text, search_term):
         vader_test = analyser.polarity_scores(text)
         vader_sentiment.append(vader_test)
         vader_compound.append(vader_sentiment[i]["compound"])
+        vader_pos.append(vader_sentiment[i]["pos"])
+        vader_neg.append(vader_sentiment[i]["neg"])
+        vader_neutral.append(vader_sentiment[i]["neu"])
+
         time_stamp.append(time)
         i += 1
     # create a datfarem of our results
     df = pd.DataFrame(vader_compound, columns = ["Vader_compound"]) 
     # print(user_text)
+    df["Vader_pos"] = vader_pos
+    df["Vader_neg"]= vader_neg
+    df["Vader_neutral"] = vader_neutral
     df["Time"] = time_stamp 
     # convert "created at" to datetime
     df["Time"] = pd.to_datetime(df["Time"],
@@ -83,7 +93,8 @@ def sentiment_analyzer(user_text, search_term):
             'xanchor': 'center',
             'yanchor': 'top'})
     fig.show()
-    word_cloud(user_text,search_term)
+    df.to_csv('sentiment.csv')
+    # word_cloud(user_text,search_term)
 
 # create word clouds
 # convert all the tweets into a single list

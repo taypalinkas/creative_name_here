@@ -15,7 +15,7 @@ search_term = input("Please enter a search term:\n")
 search_term = search_term.lower()
 
 stop_words = set(stopwords.words('english'))
-# import the json file and extract the text entries
+# import the csv file and extract the text entries
 with open('python_code/trumptweetdata.csv', 'r') as f:
 	csvReader = csv.DictReader(f)
 	trump_tweet_list = []
