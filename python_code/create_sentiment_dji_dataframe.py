@@ -68,17 +68,20 @@ def sentiment_analyzer(all_tweets):
     # convert "created at" to datetime
     df["Time"] = pd.to_datetime(df["Time"],
     infer_datetime_format = "%d/%m/%Y", utc = True)
-    
+    # from time import strftime
+    # strftime("%Y-%m-%d %H:%M:%S")
     #import dow data and create dataframe
     dow_data = dow_jones()
     dow_df = pd.DataFrame(dow_data, columns=["Date", "Open", "High", "Low", "Close", "Volume"])
     # print(dow_df) 
     # create a volatility column
-    print(type(dow_df["High"][0]))
+    print(type(dow_df["Date"]))
     dow_df["Volatility"] = dow_df["High"] - dow_df["Low"]
     #convert dow data to datetime
     dow_df["Date"] = pd.to_datetime(dow_df["Date"],
     infer_datetime_format="%Y/%m/%d", utc=True)
+    print(dow_df["Date"])
+
     # sort dataframes  by date
     df = df.sort_values('Time')
     dow_df = dow_df.sort_values('Date')
@@ -90,7 +93,18 @@ def sentiment_analyzer(all_tweets):
     final_df = final_df[new_columns]
     final_df.to_csv('dow_and_sentiment.csv')
     condensed_df = final_df.drop(columns=["Date","Vader_pos", "Vader_neg", "Vader_neutral", "High", "Low"])
+    print(condensed_df["Time"])
+    # convert the time column to string and split the +00:00 to remove it
+    condensed_df["Time"] = condensed_df["Time"].astype(str)
+    new = condensed_df["Time"].str.split("+", n=1, expand = True)
+    condensed_df["Time"] = new[0]
+    print(condensed_df["Time"])    
     condensed_df = condensed_df.round(decimals=3)
+
+
+    # condensed_df["Time"] = datetime.datetime.utcnow()
+    # UTC_datetime_timestamp = float(condensed_df.strftime("%s"))
+    # local_datetime_converted = datetime.datetime.fromtimestamp(UTC_datetime_timestamp)
 
     condensed_df.to_csv('condensed_dow_and_sentiment.csv')
 
