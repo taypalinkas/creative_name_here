@@ -45,8 +45,9 @@ img{
 
 /*screen sizes*/
 @media (max-width: 800px) {
-  #table-area td {
+  #table-area  {
     font-size: 1em;
+    width: 100%;
   }
 }
 @media (max-width: 500px) {
