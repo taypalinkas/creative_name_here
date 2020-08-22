@@ -1,6 +1,4 @@
-# useful functions for NLP: Load Document, Clean document
-# cut a doc into fixed sized sequences of tokens, save doc
-# load doc into memory
+
 import nltk
 from nltk.stem import WordNetLemmatizer
 from textblob.sentiments import NaiveBayesAnalyzer
@@ -18,66 +16,43 @@ nltk.download('wordnet')
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from wordcloud import WordCloud, STOPWORDS
-
-# remove '#' from puctuation to remove to preserve hashtags
-# punct_to_remove = string.punctuation
-# punct_to_remove = punct_to_remove.replace("#", "")
-# punct_to_remove = punct_to_remove.replace("@", "")
-
-pd.set_option("display.max_rows", None, "display.max_columns", None)
 #import standard stopwords from NLTK, may need to customize this list
 stop_words = set(stopwords.words('english'))
 
 # take the original tweets , remove stopwords and punctuation other than #,#, 
-# remove some unneccessary tokens and make everything lowercasse: create a datfram with sentiemht and TimeoutError
-
-def clean_punct(text):
-	punctuations = """!()-[]''{}"";:,<>./?$%^&*_~"""
-	no_punct = ""
-	for char in text:
-		if char not in punctuations:
-			no_punct = no_punct + char
-	return no_punct
+# remove some unneccessary tokens and make everything lowercase: create a datframe with sentiment and Time
 
 def clean_data():
 	clean_tweet_list = []
-	total_tokens = 0  # import the csv file and extract the text entries
+	total_tokens = 0  
+	# import the csv file and extract the text entries
 	with open('condensed_dow_and_sentiment.csv', 'r') as f:
 		csvReader = csv.DictReader(f)
 		tweet_list = []
 		clean_tweet_list = []
 		time_list = []
 		Vader_list = []
-	
 		for row in csvReader:
 			data = row["Tweet_text"], row["Time"], row["Vader_compound"]
 			tweet_list.append(data)
-# clean the text
+
 	for tweet in tweet_list:
 		text = tweet[0]
-		# text = clean_punct(text)
 		time = tweet[1]
 		Vader_compound = tweet[2]
 		#remove RT, &amp, hyperlinks: preserve U.S.
-		# tweet[0] = tweet[0].str.replace("[^a-zA-Z#]", " ")
-
 		text = re.sub(r'https.*', '', text)
 		text = text.replace('&amp', '')
 		text = text.replace('U.S.', 'usa')
 		text = text.replace('RT', '')
-		text = text.replace(';', '')
-		text = text.replace('-', '')
-
 		# split tweets into tokens by white space
 		tokens = text.split()
 		# make lower case
 		tokens = [word.lower() for word in tokens]
+	# Remove punctuation no roman alphabet words from each tweet, except for # and @
+	# preserve numbers( use is aplha for just letters, is alnum for letters and numbers)
+		tokens = ["".join(c for c in word if c.isalnum() or c=="#" or c=="@") for word in tokens ]
 
-#	Remove punctuation from each tweet, except for
-		# table = str.maketrans('', '', string.punctuation)
-		# tokens = [w.translate(table) for w in tokens]
-	# Remove tokens that are not alphabetic?
-		# tokens = [word for word in tokens if word.isalpha()]
 	# should we lematize tokens: maybe not
 		# lemmatizer = WordNetLemmatizer()
 		# lemmas = ' '.join([lemmatizer.lemmatize(w) for w in tokens])
@@ -118,9 +93,12 @@ def word_counter():
 		for w in tokens:
 			try:
 				DF[w].add(i)
+			# .add is a set function (creates a set), so it will only add 1 time, set values have to be unique
 			except:
 				DF[w] = {i}
-
+	# the except adds the word if the word doesn't exist in the dictionary (creates a key and stores the first index)
+	
+	# print(DF.items())
 	for word in DF:
 		#get the number of occurences of each word
 		DF[word] = len(DF[word])
@@ -130,42 +108,15 @@ def word_counter():
 		if '@' in word:
 			references.append(word)
 	from collections import Counter
-	# print(references)
-	# number = Counter(references)
+	number = Counter(references)
+	print(number)
 	print(f"sample references: {references[0:9]} sample hashtags {hashtags[0:9]}")
-	print(f"There are {len(hashtags)} hashtags \n there are {len(references)} references")
-
-	# DF.keys is the lst of words
-	# DF.values is the tweet ID
-	# print(DF.items())
+	print(f"There are {len(hashtags)} hashtags \nThere are {len(references)} references")
 	
-	#Create a list of words sorted by their frequency
 	sorted_frequency = sorted(DF.items(), key = lambda x: x[1], reverse = True)
-	print(f"The top 20 words are {sorted_frequency[0:19]}")
+	print(f"The top 40 words are {sorted_frequency[0:39]}")
 	# create a list of unique words
 	total_vocab = [x for x in DF]
-	print(f"There are {len(total_vocab)}  words after removing stop words, but the list needs cleaning")
+	print(f"There are {len(total_vocab)}  unique words after removing stop words")
 
 word_counter()
-
-# Things to work on
-# combine u.s., u.s.a., america? 
-# remove stop words first?
-# do lemmatization?
-# some names are connected together
-# some hashtags, foreign words and emoticons. The n-grams are hashtags
-#2268 are retweets
-# remove "&amp"
-
-# remove twitter handles
-# def remove_pattern(input_txt, pattern):
-#   r = re.findall(pattern, input_txt)
-#   for i in r:
-#     input_txt = re.sub(i, '', input_txt)
-
-#   return input_txt
-
-# combi['tidy_tweet'] = np.vectorize(remove_pattern)(combi['tweet'], "@[\w]*")
-# Remove special characters, numbers, punctuation
-
-# combi['tidy_tweet'] = combi['tidy_tweet'].str.replace("[^a-zA-Z#]", " ")
