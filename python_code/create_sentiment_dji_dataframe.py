@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 analyser = SentimentIntensityAnalyzer()
-# pd.set_option("display.max_rows", None, "display.max_columns", None)
+pd.set_option("display.max_rows", None, "display.max_columns", None)
 
 # import and clean all tweets
 def clean_text():
@@ -68,44 +68,36 @@ def sentiment_analyzer(all_tweets):
     # convert "created at" to datetime
     df["Time"] = pd.to_datetime(df["Time"],
     infer_datetime_format = "%d/%m/%Y", utc = True)
-    # from time import strftime
-    # strftime("%Y-%m-%d %H:%M:%S")
-    #import dow data and create dataframe
+# create dow jones dataframe
     dow_data = dow_jones()
     dow_df = pd.DataFrame(dow_data, columns=["Date", "Open", "High", "Low", "Close", "Volume"])
-    # print(dow_df) 
     # create a volatility column
-    print(type(dow_df["Date"]))
     dow_df["Volatility"] = dow_df["High"] - dow_df["Low"]
     #convert dow data to datetime
     dow_df["Date"] = pd.to_datetime(dow_df["Date"],
     infer_datetime_format="%Y/%m/%d", utc=True)
-    print(dow_df["Date"])
-
     # sort dataframes  by date
     df = df.sort_values('Time')
     dow_df = dow_df.sort_values('Date')
+    #get a tweet count per day
+    df['just_date'] = df['Time'].dt.date
+    df['Tweet_count'] = df.groupby("just_date")["just_date"].transform("count")
+
    # merge tweet dataframe and dow dataframe 
     final_df = pd.merge_asof(df,dow_df, left_on="Time", right_on="Date")
-    # final_df.drop(columns="Time")
-    cols_to_order = ['Time', 'Vader_compound','Volatility', "Open", "Close"]
+    final_df.drop(columns="Time")
+    cols_to_order = ['Time',"Tweet_count", 'Vader_compound', 'Volatility', "Open", "Close"]
     new_columns = cols_to_order + (final_df.columns.drop(cols_to_order).tolist())
     final_df = final_df[new_columns]
     final_df.to_csv('dow_and_sentiment.csv')
-    condensed_df = final_df.drop(columns=["Date","Vader_pos", "Vader_neg", "Vader_neutral", "High", "Low"])
-    print(condensed_df["Time"])
+    condensed_df = final_df.drop(columns=["Date","Vader_pos","just_date", "Vader_neg", "Vader_neutral", "High", "Low"])
+
     # convert the time column to string and split the +00:00 to remove it
     condensed_df["Time"] = condensed_df["Time"].astype(str)
     new = condensed_df["Time"].str.split("+", n=1, expand = True)
     condensed_df["Time"] = new[0]
-    print(condensed_df["Time"])    
     condensed_df = condensed_df.round(decimals=3)
-
-
-    # condensed_df["Time"] = datetime.datetime.utcnow()
-    # UTC_datetime_timestamp = float(condensed_df.strftime("%s"))
-    # local_datetime_converted = datetime.datetime.fromtimestamp(UTC_datetime_timestamp)
-
+    print(condensed_df)
     condensed_df.to_csv('condensed_dow_and_sentiment.csv')
 
 def dow_jones():

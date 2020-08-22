@@ -52,11 +52,6 @@ def clean_data():
 	# Remove punctuation no roman alphabet words from each tweet, except for # and @
 	# preserve numbers( use is aplha for just letters, is alnum for letters and numbers)
 		tokens = ["".join(c for c in word if c.isalnum() or c=="#" or c=="@") for word in tokens ]
-
-	# should we lematize tokens: maybe not
-		# lemmatizer = WordNetLemmatizer()
-		# lemmas = ' '.join([lemmatizer.lemmatize(w) for w in tokens])
-
 	# remove stop words
 		content_word_tweet = [w for w in tokens if not w in stop_words]
 		number_of_tokens = len(content_word_tweet)
