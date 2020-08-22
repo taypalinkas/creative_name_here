@@ -73,12 +73,12 @@ d3.csv("condensed_dow_and_sentiment.csv", function(data) {
       .attr("text-anchor", "middle")  
       .style("font-size", "16px") 
       .attr("class", "axisText")
-      .text("Value vs Date Graph");
+      .text("Volatility & Sentiment");
   
   chartGroup.append("text")
       .attr("transform", `translate(${(chartwidth/2) + 50}, ${(chartheight) + 40})`)
       .attr("class", "axisText")
-      .text("Year");
+      .text("Sentiment");
 
   chartGroup.append("text")
       .attr("transform", "rotate(-90)")

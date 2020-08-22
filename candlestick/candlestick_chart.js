@@ -1,4 +1,4 @@
-Plotly.d3.csv('candlestick/DJI.csv', function(rows){
+Plotly.d3.csv('DJI.csv', function(rows){
 
 function unpack(rows, key) {
   return rows.map(function(row) {
@@ -68,3 +68,4 @@ var layout = {
 
 Plotly.newPlot('stockChart', data, layout);
 });
+
