@@ -33,7 +33,7 @@ function makeResponsive() {
 
 // csv import & format data 
 // ("%Y-%m-%d %H:%M:%S")
-  d3.csv("condensed_dow_and_sentiment.csv").then(function(sentimentData) {
+  d3.csv("../candlestick/condensed_dow_and_sentiment.csv").then(function(sentimentData) {
   
   var parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
     sentimentData.forEach(function(data) {

@@ -31,7 +31,7 @@ var chartGroup = svg.append("g")
 .attr("transform", `translate(${margin.left - 20 } , ${margin.top })`);
 
 //Read the data
-d3.csv("condensed_dow_and_sentiment.csv", function(data) {
+d3.csv("../candlestick/condensed_dow_and_sentiment.csv", function(data) {
 
   // Add X axis
   var x = d3.scaleLinear()

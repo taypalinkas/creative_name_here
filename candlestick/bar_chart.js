@@ -1,4 +1,4 @@
-d3.csv("condensed_dow_and_sentiment.csv").then(function(sentimentData) {
+d3.csv("../candlestick/condensed_dow_and_sentiment.csv").then(function(sentimentData) {
 
 //count
 var sum = 0;
