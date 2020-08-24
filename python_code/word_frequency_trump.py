@@ -22,6 +22,20 @@ stop_words = set(stopwords.words('english'))
 # take the original tweets , remove stopwords and punctuation other than #,#, 
 # remove some unneccessary tokens and make everything lowercase: create a datframe with sentiment and Time
 
+
+from nltk.corpus import wordnet
+
+def get_wordnet_pos(word):
+    """Map POS tag to first character lemmatize() accepts"""
+    tag = nltk.pos_tag([word])[0][1][0].upper()
+    tag_dict = {"J": wordnet.ADJ,
+                "N": wordnet.NOUN,
+                "V": wordnet.VERB,
+                "R": wordnet.ADV}
+
+    return tag_dict.get(tag, wordnet.NOUN)
+
+
 def clean_data():
 	clean_tweet_list = []
 	total_tokens = 0  
@@ -54,6 +68,10 @@ def clean_data():
 		tokens = ["".join(c for c in word if c.isalnum() or c=="#" or c=="@") for word in tokens ]
 	# remove stop words
 		content_word_tweet = [w for w in tokens if not w in stop_words]
+		lemmatizer = WordNetLemmatizer()
+		lemmatized_output = ' '.join([lemmatizer.lemmatize(w)for w in content_word_tweet])
+
+		# print(lemmatized_output)
 		number_of_tokens = len(content_word_tweet)
 	# calculate the number of tokens
 		clean_tweet_list.append(content_word_tweet)	
@@ -68,7 +86,6 @@ def clean_data():
 	word_frequency_df["Time"] = time_list
 	word_frequency_df["Vader_compound"] = Vader_list
 	# print (word_frequency_df) 
-	print(len(clean_tweet_list), len(time_list),len(Vader_list))
 	return clean_tweet_list, word_frequency_df
 
 # def to count word frquency and make a vocab list of all words used
@@ -104,12 +121,11 @@ def word_counter():
 			references.append(word)
 	from collections import Counter
 	number = Counter(references)
-	print(number)
 	print(f"sample references: {references[0:9]} sample hashtags {hashtags[0:9]}")
 	print(f"There are {len(hashtags)} hashtags \nThere are {len(references)} references")
-	
 	sorted_frequency = sorted(DF.items(), key = lambda x: x[1], reverse = True)
-	print(f"The top 40 words are {sorted_frequency[0:39]}")
+#	remove the blank spaces at position 0
+	print(f"The top 40 words are {sorted_frequency[1:40]}")
 	# create a list of unique words
 	total_vocab = [x for x in DF]
 	print(f"There are {len(total_vocab)}  unique words after removing stop words")

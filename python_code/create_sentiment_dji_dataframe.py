@@ -82,7 +82,7 @@ def sentiment_analyzer(all_tweets):
     #get a tweet count per day
     df['just_date'] = df['Time'].dt.date
     df['Tweet_count'] = df.groupby("just_date")["just_date"].transform("count")
-
+    print(avg(df["Tweet_count"]))
    # merge tweet dataframe and dow dataframe 
     final_df = pd.merge_asof(df,dow_df, left_on="Time", right_on="Date")
     final_df.drop(columns="Time")

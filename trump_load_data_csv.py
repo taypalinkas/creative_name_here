@@ -16,12 +16,13 @@ search_term = search_term.lower()
 
 stop_words = set(stopwords.words('english'))
 # import the csv file and extract the text entries
-with open('python_code/trumptweetdata.csv', 'r') as f:
+with open('python_code/condensed_dow_and_sentiment.csv', 'r') as f:
 	csvReader = csv.DictReader(f)
 	trump_tweet_list = []
 	for tweet in csvReader:
-		data = tweet["text"], tweet["created_at"]
+		data = tweet["Time"], tweet["Vader_compound"]
 		trump_tweet_list.append(data)
+	print(type(trump_tweet_list))
 # clean the text
 	clean_tweet_list = []
 	total_tokens = 0
@@ -47,4 +48,3 @@ with open('python_code/trumptweetdata.csv', 'r') as f:
 	# calculate the number of tokens
 	number_of_tokens = len(user_text)
 	print(f"There were {len(user_text)} tweets with the search term {search_term}")
-print(user_text)

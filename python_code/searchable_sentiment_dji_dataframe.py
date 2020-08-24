@@ -26,7 +26,7 @@ def import_data():
         for row in csvReader:
             data = row["Time"], row["Vader_compound"],row["Volatility"], row["Open"],row["Close"],row["Tweet_text"], row["Volume"]
             dow_tweet_list.append(data)
-
+        print(dow_tweet_list)
         for tweet in dow_tweet_list:
             time = tweet[0]
             sentiment = tweet[1]
