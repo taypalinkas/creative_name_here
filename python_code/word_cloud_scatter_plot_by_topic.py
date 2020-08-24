@@ -35,19 +35,19 @@ def word_cloud(user_text):
 	plt.show()
 
 
-
 # import and clean all tweets
 def import_data():
 # import the csv file and extract the text entries
-	search_term_list = ['news','fake','media', 'cnn','even', 'never', 'story', 'corrupt','bad','would']
+	search_term_list = ['border', 'strong', 'military', 'endorsement', 'total', 'crime', 'vote', 'vets']
 	with open('condensed_dow_and_sentiment.csv', 'r') as f:
 		csvReader = csv.DictReader(f)
-		dow_tweet_list = []
+		tweet_list = []
+		original_tweet_list = []
 		clean_tweet_list = []
 		for row in csvReader:
 			data = row["Time"], row["Vader_compound"],row["Volatility"], row["Open"],row["Close"],row["Tweet_text"], row["Volume"]
-			dow_tweet_list.append(data)
-		for tweet in dow_tweet_list:
+			tweet_list.append(data)
+		for tweet in tweet_list:
 			time = tweet[0]
 			sentiment = tweet[1]
 			dow_volatility = tweet[2]
@@ -55,35 +55,46 @@ def import_data():
 			dow_close = tweet[4]
 			text = tweet[5]
 			dow_volume = tweet[6]
-			text = re.sub(r'https.*', ' ', text)
-			text = text.replace('&amp', '')
-			text = text.replace('U.S.', 'usa')
-			text = text.replace('dems', 'democrats')
-			text = text.replace('RT', '')
-			text = text.lower()
-
-			tokens = text.split()
-			tokens = [w for w in tokens if not w in stop_words]
-			listToStr = ' '.join(map(str, tokens))
-			content_word_tweets = time, sentiment, dow_volatility, dow_open, dow_close, listToStr, dow_volume	
-		#searching for user input term (lower case)
-			for word in search_term_list:
-				if word in tokens:
-					clean_tweet_list.append(content_word_tweets)
-			user_text = clean_tweet_list
+			if len(text)>5:
+				text = re.sub(r'https.*', ' ', text)
+				text = text.replace('&amp', '')
+				text = text.replace('U.S.', 'usa')
+				text = text.replace('dems', 'democrats')
+				text = text.replace('RT', '')
+				text = text.replace('-', '')
+				text = text.replace('?', '')
+				text = text.replace('.', '')
+				text = text.replace('#', '')
+				text = text.replace('@', '')
+				text = text.lower()
+				tokens = text.split()
+				tokens = [w for w in tokens if not w in stop_words]
+				print(tokens)
+				listToStr = ' '.join(map(str, tokens))
+				content_word_tweets = time, sentiment, dow_volatility, dow_open, dow_close, listToStr, dow_volume	
+			#searching for user input term (lower case)
+				for word in search_term_list:
+					if word in tokens:
+						clean_tweet_list.append(content_word_tweets)
+						original_tweet_list.append(tweet)
+				user_text = clean_tweet_list
 		df = pd.DataFrame(clean_tweet_list, columns = ["Time", "Sentiment","A", "B", "C", "Text", "F"]) 
+		df["Tweet"] = original_tweet_list
 		df = df.drop(columns = ["A", "B", "C", "F"])
 		word_cloud(user_text)
-		return df
+		return df, search_term_list
 
-df = import_data()
-fig = px.scatter(df, x="Time", y= "Sentiment", hover_data = ["Time", "Text"])
+df, search_term_list = import_data()
+search_terms = ' '.join(map(str, search_term_list))
+
+fig = px.scatter(df, x="Time", y= "Sentiment", hover_data=["Tweet", "Sentiment"])
 fig.update_layout(
 		title={
-			'text': "Results for: ",
+			'text': "Results for: " + search_terms,
 			'y': 0.99,
 			'x': 0.5,
 			'xanchor': 'center',
 			'yanchor': 'top'})
 fig.show()
+
 

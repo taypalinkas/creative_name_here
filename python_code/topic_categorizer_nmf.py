@@ -89,7 +89,7 @@ def display_topics(model, feature_names, no_top_words):
 
 # # Do a NMF model
 # i is the number of topics, no_top_words = number of words in the topic list
-for i in range(9,11,2):
+for i in range(9,15,2):
 	no_top_words = 8
 	model = NMF(n_components=i, random_state=0, max_iter=500, alpha=.1, l1_ratio=.5)
 	model.fit(tf)
