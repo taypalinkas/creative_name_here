@@ -1,4 +1,4 @@
-Plotly.d3.csv('DJI.csv', function(rows){
+Plotly.d3.csv('../charts/DJI.csv', function(rows){
 
 function unpack(rows, key) {
   return rows.map(function(row) {
